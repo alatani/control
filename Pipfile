@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 gym = "*"
 numpy = "*"
+scikit-learn = "*"
 
 [dev-packages]
 
