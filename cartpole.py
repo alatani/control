@@ -1,5 +1,47 @@
 import gym
 
+import dataclass
+
+from typing import List
+import numpy as np
+
+# https://qiita.com/animegazer/items/4158462e5a3efaba9d7b
+
+@dataclass
+class ProductionPlan:
+    sozai: float
+
+@dataclass
+class State:
+    sozai: float
+    buhin: float
+    seihin: float
+
+
+@dataclass
+class ProductionScheduling:
+    state: State
+
+    k1 = 0.5
+    k2 = 0.8
+
+    def __init__(self):
+        self.state = State(sozai=0, buhin=0, seihin=0)
+        pass
+
+
+    def reset(self):
+        pass
+
+    def render(self):
+        pass
+
+    def step(self, action: ProductionPlan):
+        #(observation, reward, done, info)
+        pass
+
+
+
 
 # https://gym.openai.com/docs/
 def do_nothing(env):
