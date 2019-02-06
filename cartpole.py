@@ -1,6 +1,6 @@
 import gym
 
-import dataclass
+from dataclasses import dataclass
 
 from typing import List
 import numpy as np
@@ -41,6 +41,9 @@ class ProductionScheduling:
         pass
 
 
+
+class TDGradientAgent:
+    pass
 
 
 # https://gym.openai.com/docs/

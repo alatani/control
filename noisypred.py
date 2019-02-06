@@ -17,7 +17,6 @@ from typing import Callable
 # f(x) と ε の分散比が1:1000くらいになるようにした人工ランダムデータを生成。
 # あとは自分のアルゴが回帰した関数が真のf にどれくらい近いか計ってみればよい
 
-
 @dataclass
 class Dataset:
     samples: int
