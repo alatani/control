@@ -92,9 +92,9 @@ class StringSpaceCartPole(gym.core.Env):
 
     def step(self, action):
         observation, reward, done, info = self.underlying.step(action)
-        return self._stringify(observation), reward, done, info
+        return self._index(observation), reward, done, info
 
-    def _stringify(self, observation) -> str:
+    def _index(self, observation) -> int:
         x = observation[0]
         x_v = observation[1]
         theta = observation[2]  # +/-0.42
@@ -109,6 +109,7 @@ class StringSpaceCartPole(gym.core.Env):
 
 
 class OnPolicyQAgent:
+    from typing import Dict
     import numpy as np
     from gym.core import Env
 
@@ -119,6 +120,8 @@ class OnPolicyQAgent:
     maxT: int = 100
     trial: int = 1000
 
+    q_table: Dict[str, float]
+
     def __init__(self, env: Env):
         self.env = env
 
@@ -128,16 +131,24 @@ class OnPolicyQAgent:
 
     def train(self):
         for _ in range(self.trial):
-            for t in range(self.maxT):
-                env.render()
-                print(observation)
-                action = env.action_space.sample()
-                observation, reward, done, info = env.step(action)
-                if done:
-                    print("Episode finished after {} timesteps".format(t + 1))
-                    break
+            self.sample()
 
-        pass
+    def sample(self):
+        for t in range(self.maxT):
+
+            action = env.action_space.sample()
+
+            observation, reward, done, info = env.step(action)
+            if done:
+                print("Episode finished after {} timesteps".format(t + 1))
+                break
+
+    epsilon:float = 0.05
+    def _act_policy(self, state):
+        if np.random.random < self.epsilon:
+            pass
+        else:
+            pass
 
 
 if __name__ == "__main__":
