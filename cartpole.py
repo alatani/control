@@ -66,18 +66,23 @@ def random_action(env):
                 print("Episode finished after {} timesteps".format(t + 1))
                 break
 
+
 @dataclass
-class DiscreteCartPole(gym.core.Env):
-    underlying: Env
+class StringSpaceCartPole(gym.core.Env):
+    underlying: gym.core.Env
 
     def __init__(self, env: gym.core.Env):
         self.underlying = env
+        self.action_space = env.action_space
 
-    def action_space(self):
-        return self.underlying.action_space
+    def reset(self):
+        return self.underlying.reset()
+
+    def render(self, mode='human'):
+        return self.underlying.render(mode)
 
     def observation_space(self):
-        return self.underlying.observation_space
+        return "str"
 
     def metadata(self):
         return self.underlying.metadata
@@ -87,12 +92,20 @@ class DiscreteCartPole(gym.core.Env):
 
     def step(self, action):
         observation, reward, done, info = self.underlying.step(action)
-        self._discretize(observation), reward, done, info
+        return self._stringify(observation), reward, done, info
 
+    def _stringify(self, observation) -> str:
+        x = observation[0]
+        x_v = observation[1]
+        theta = observation[2]  # +/-0.42
+        theta_v = observation[3]  # +/-inf
 
-    def _discretize(self, observation):
-        return observation
+        theta = str(np.round((theta / 0.42) * 7))
 
+        theta_v_maxabs = 6
+        theta_v = np.round(np.clip(theta_v, -theta_v_maxabs, theta_v_maxabs))
+
+        return "{0}/{1}".format(theta, theta_v)
 
 
 class OnPolicyQAgent:
@@ -103,12 +116,11 @@ class OnPolicyQAgent:
 
     # TODO: actionを選ぶ部分を分離
     # TODO: alpha決定する部分を分離
-
-    q_table: np.ndarray
     maxT: int = 100
     trial: int = 1000
 
-    def __init__(self):
+    def __init__(self, env: Env):
+        self.env = env
 
         self.q_table: np.ndarray = np.zeros(())
 
@@ -131,5 +143,26 @@ class OnPolicyQAgent:
 if __name__ == "__main__":
     env = gym.make('CartPole-v0')
     print(type(env))
+    print(env.observation_space)
+    print(env.observation_space.high)
+    print(env.observation_space.low)
+
+    env = StringSpaceCartPole(env)
+
+    q_agent = OnPolicyQAgent(env)
+
+    for _ in range(10):
+        env.reset()
+        for t in range(100):
+            env.render()
+            action = env.action_space.sample()
+            observation, reward, done, info = env.step(action)
+            print(observation)
+            if done:
+                print("Episode finished after {} timesteps".format(t + 1))
+                break
+
+    #qlearn = OnPolicyQAgent(strCartPole)
+
     # do_nothing(env)
     # random_action(env)
