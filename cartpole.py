@@ -100,12 +100,40 @@ class StringSpaceCartPole(gym.core.Env):
         theta = observation[2]  # +/-0.42
         theta_v = observation[3]  # +/-inf
 
+        self.theta_grid = Grid(high = np.array())
+
         theta = str(np.round((theta / 0.42) * 7))
 
         theta_v_maxabs = 6
         theta_v = np.round(np.clip(theta_v, -theta_v_maxabs, theta_v_maxabs))
 
         return "{0}/{1}".format(theta, theta_v)
+
+class Grid:
+    import numpy as np
+    dim: int
+    high: np.ndarray
+    low: np.ndarray
+    split: np.ndarray
+
+    def __init__(self, high: list, low:list,split:list):
+        self.high = np.array(high)
+        self.low = np.array(low)
+        self.split = np.array(split)
+
+        self.dim = self.high.size
+        assert(self.high.size == self.dim)
+        assert(self.low.size == self.dim)
+        assert(self.split.size == self.dim)
+
+
+    def indexize(self, coord: np.array) -> int:
+        assert(coord.size == self.dim)
+        np.digitize
+
+        return 0
+        pass
+
 
 
 class OnPolicyQAgent:
@@ -134,11 +162,13 @@ class OnPolicyQAgent:
             self.sample()
 
     def sample(self):
+        self.env.reset()
+
         for t in range(self.maxT):
 
-            action = env.action_space.sample()
+            action = self.env.action_space.sample()
 
-            observation, reward, done, info = env.step(action)
+            observation, reward, done, info = self.env.step(action)
             if done:
                 print("Episode finished after {} timesteps".format(t + 1))
                 break
@@ -146,9 +176,12 @@ class OnPolicyQAgent:
     epsilon:float = 0.05
     def _act_policy(self, state):
         if np.random.random < self.epsilon:
-            pass
+            return self.env.action_space.sample()
         else:
+            self.q_table[state]
+            return None
             pass
+
 
 
 if __name__ == "__main__":
@@ -162,16 +195,19 @@ if __name__ == "__main__":
 
     q_agent = OnPolicyQAgent(env)
 
-    for _ in range(10):
+    for _ in range(1):
         env.reset()
         for t in range(100):
             env.render()
             action = env.action_space.sample()
             observation, reward, done, info = env.step(action)
-            print(observation)
+            print(action, observation)
             if done:
                 print("Episode finished after {} timesteps".format(t + 1))
                 break
+
+    import sys
+    sys.exit()
 
     #qlearn = OnPolicyQAgent(strCartPole)
 
