@@ -115,6 +115,7 @@ class Grid:
     high: np.ndarray
     low: np.ndarray
     split: np.ndarray
+    gridsize: np.ndarray
 
     def __init__(self, high: list, low:list,split:list):
         self.high = np.array(high)
@@ -126,10 +127,21 @@ class Grid:
         assert(self.low.size == self.dim)
         assert(self.split.size == self.dim)
 
+        self.gridsize = split + 1
+
 
     def indexize(self, coord: np.array) -> int:
         assert(coord.size == self.dim)
-        np.digitize
+
+        digitized = np.floor(self.split * (coord - self.low) / (self.high - self.low))
+        digitized = np.clip(digitized, np.zeros(self.dim), self.split)
+
+        index = 0
+        for (d,gs) in zip(digitized, self.gridsize):
+            index += d
+            pass
+
+
 
         return 0
         pass
